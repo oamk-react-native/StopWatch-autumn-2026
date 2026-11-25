@@ -2,9 +2,12 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect, useReducer } from 'react';
 import { StyleSheet, Button, View, Text } from 'react-native';
 import { clockReducer, initialState } from './reducers/clockReducer';
+import { useClock } from './hooks/useClock';
+import FormattedTime from './components/FormattedTime';
 
 export default function App() {
-  const [clockState,changeClockState] = useReducer(clockReducer,initialState)
+  const { time, isRunning, start, stop, reset} = useClock()
+/*   const [clockState,changeClockState] = useReducer(clockReducer,initialState)
 
   useEffect(() => {
     if (!clockState.isRunning) return
@@ -15,14 +18,15 @@ export default function App() {
       clearInterval(timerId)
     }
   },[clockState.isRunning])
+ */
 
   return (
     <View style={styles.container}>
-      <Text>{clockState.time}</Text>
+      <FormattedTime time={time}/>
       <View style={styles.buttons}>
-        <Button title="Start" onPress={() => changeClockState({type: 'start'})}/>
-        <Button title="Stop" onPress={() => changeClockState({type: 'stop'})}/>
-        <Button title="Reset" onPress={() => changeClockState({type: 'reset'})}/>
+        <Button title="Start" onPress={start} disabled={isRunning}/>
+        <Button title="Stop" onPress={stop} disabled={!isRunning}/>
+        <Button title="Reset" onPress={reset} disabled={time===0 && !isRunning}/>
       </View>
       <StatusBar style="auto" />
     </View>
